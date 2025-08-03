@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Counter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg:#0f172a;
+      --card:#1e2a44;
+      --radius:12px;
+      --shadow:0 16px 40px -10px rgba(15,23,42,0.4);
+      --ff: system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+      --transition:0.25s cubic-bezier(.4,.2,.2,1);
+      --accent:#6366f1;
+      --muted:#94a3b8;
+    }
+
+    *{box-sizing:border-box;}
+
+    body {
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-family: var(--ff);
+      background: linear-gradient(135deg,#0f172a 0%,#1e2a44 70%);
+      color:#e6edf9;
+      padding:1rem;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding:1.75rem 2rem;
+      max-width:360px;
+      width:100%;
+      box-shadow: var(--shadow);
+      display:flex;
+      flex-direction:column;
+      gap:1rem;
+    }
+
+    .title {
+      font-size:1.5rem;
+      font-weight:600;
+      margin:0;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:0.5rem;
+    }
+
+    .counter-wrapper {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:1rem;
+      flex-wrap: wrap;
+    }
+
+    .display {
+      min-width:100px;
+      background:#0f1a38;
+      padding:0.75rem 1rem;
+      border-radius:8px;
+      font-size:2rem;
+      font-weight:700;
+      text-align:center;
+      position:relative;
+    }
+
+    .btn {
+      background: var(--accent);
+      border:none;
+      padding:0.75rem 1.2rem;
+      font-size:1rem;
+      font-weight:600;
+      border-radius:8px;
+      cursor:pointer;
+      transition: var(--transition);
+      color:#fff;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:4px;
+      min-width:48px;
+    }
+
+    .btn:active { transform: translateY(1px); }
+    .btn:disabled {
+      opacity:0.5;
+      cursor:not-allowed;
+    }
+
+    .small {
+      font-size:0.75rem;
+      color: var(--muted);
+    }
+
+    .controls {
+      display:flex;
+      gap:0.5rem;
+      flex-wrap: wrap;
+      justify-content:center;
+    }
+
+    .reset {
+      background: transparent;
+      border:2px solid var(--accent);
+      color: var(--accent);
+    }
+
+    .reset:hover {
+      background: rgba(99,102,241,0.1);
+    }
+
+    .access {
+      position:absolute;
+      width:1px;
+      height:1px;
+      padding:0;
+      margin:-1px;
+      overflow:hidden;
+      clip:rect(0 0 0 0);
+      border:0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card" aria-label="Counter widget">
+    <div class="title">
+      <div>Simple Counter</div>
+      <div class="small">Increment / Decrement / Reset</div>
+    </div>
+
+    <div class="counter-wrapper">
+      <button class="btn" id="decrement" aria-label="Decrement">−</button>
+
+      <div class="display" id="display" aria-live="polite" aria-atomic="true">
+        0
+      </div>
+
+      <button class="btn" id="increment" aria-label="Increment">+</button>
+    </div>
+
+    <div class="controls" aria-label="Additional controls">
+      <button class="btn reset" id="reset" aria-label="Reset counter">Reset</button>
+    </div>
+    
+  </div>
+
+  <script>
+    (function(){
+      const display = document.getElementById('display');
+      const inc = document.getElementById('increment');
+      const dec = document.getElementById('decrement');
+      const reset = document.getElementById('reset');
+
+      let count = 0;
+
+      function update() {
+        display.textContent = count;
+        dec.disabled = count <= 0;
+      }
+
+      inc.addEventListener('click', () => {
+        count++;
+        update();
+      });
+
+      dec.addEventListener('click', () => {
+        if (count > 0) count--;
+        update();
+      });
+
+      reset.addEventListener('click', () => {
+        count = 0;
+        update();
+      });
+
+      // keyboard shortcuts
+      document.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.isContentEditable) return;
+        if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          count++;
+          update();
+        } else if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          if (count > 0) count--;
+          update();
+        } else if (e.key.toLowerCase() === 'r') {
+          e.preventDefault();
+          count = 0;
+          update();
+        }
+      });
+
+      // initialize
+      update();
+    })();
+  </script>
+</body>
+</html>
